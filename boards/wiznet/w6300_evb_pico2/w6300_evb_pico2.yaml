@@ -1,0 +1,27 @@
+# Copyright (c) 2026 SUZINEE <suzinee@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+identifier: w6300_evb_pico2
+name: W6300-EVB-Pico2
+type: mcu
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+ram: 264
+flash: 16384
+supported:
+  - adc
+  - dma
+  - gpio
+  - i2c
+  - pwm
+  - spi
+  - uart
+  - watchdog
+  - usb_device
+  - pio
+  - flash
+  - pinctrl
+  - rtc

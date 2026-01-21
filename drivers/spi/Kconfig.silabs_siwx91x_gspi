@@ -4,12 +4,9 @@
 config SPI_SILABS_SIWX91X_GSPI
 	bool "Silabs GSPI SPI Primary controller driver"
 	default y
-	depends on DT_HAS_SILABS_GSPI_ENABLED
-	depends on CLOCK_CONTROL
 	select GPIO
 	select PINCTRL
-	help
-	  Enable the GSPI SPI primary driver for the Silabs SiWx91x SoC series.
+	depends on DT_HAS_SILABS_GSPI_ENABLED && CLOCK_CONTROL && SPI
 
 if SPI_SILABS_SIWX91X_GSPI
 

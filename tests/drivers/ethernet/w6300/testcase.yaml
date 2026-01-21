@@ -1,0 +1,5 @@
+tests:
+  drivers.ethernet.w6300:
+    arch_allow: riscv32
+    platform_allow: w6300_evb_pico2/rp2350a/hazard3
+    tags: drivers ethernet

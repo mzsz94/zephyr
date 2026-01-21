@@ -1,0 +1,49 @@
+# W6300 Ethernet driver
+#
+# Copyright (c) 2026 SUZINEE
+#
+# SPDX-License-Identifier: Apache-2.0
+
+config ETH_W6300
+	bool "W6300 Ethernet driver"
+	default y
+	depends on DT_HAS_WIZNET_W6300_ENABLED
+	depends on GPIO && SPI
+	select NET_L2_ETHERNET
+	select ETH_W6300_PHY
+	help
+	  Enable W6300 Ethernet driver.
+
+if ETH_W6300
+
+config ETH_W6300_RX_THREAD_STACK_SIZE
+	int "W6300 RX thread stack size"
+	default 2048
+	help
+	  Stack size for the W6300 RX thread.
+
+config ETH_W6300_RX_THREAD_PRIO
+	int "W6300 RX thread priority"
+	default 2
+	help
+	  Priority for the W6300 RX thread.
+
+config ETH_W6300_MONITOR_PERIOD
+	int "W6300 monitor period"
+	default 250
+	help
+	  W6300 monitor period in milliseconds.
+
+config ETH_W6300_TIMEOUT
+	int "W6300 timeout"
+	default 100
+	help
+	  W6300 timeout in milliseconds.
+
+config ETH_W6300_PHY
+	bool "W6300 internal PHY"
+	default y
+	help
+	  Enable W6300 internal PHY.
+
+endif

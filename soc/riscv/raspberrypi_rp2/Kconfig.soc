@@ -1,0 +1,15 @@
+# Copyright (c) 2026 SUZINEE
+# SPDX-License-Identifier: Apache-2.0
+
+config SOC_FAMILY_RPI_RP2
+	bool
+	help
+	  Raspberry Pi RP2 SoC Family
+
+if SOC_FAMILY_RPI_RP2
+
+source "soc/riscv/raspberrypi_rp2/rp2350/Kconfig.soc"
+
+source "soc/riscv/raspberrypi_rp2/rp2350/Kconfig"
+
+endif # SOC_FAMILY_RPI_RP2

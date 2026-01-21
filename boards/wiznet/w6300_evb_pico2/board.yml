@@ -6,4 +6,4 @@ board:
   full_name: W6300-EVB-Pico2
   vendor: wiznet
   socs:
-  - name: rp2040
+  - name: rp2350a

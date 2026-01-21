@@ -1,0 +1,29 @@
+# Raspberry Pi RP2350 MCU line
+
+# Copyright (c) 2026 SUZINEE
+# SPDX-License-Identifier: Apache-2.0
+
+config SOC_SERIES_RP2350
+	select RISCV
+	select RISCV_HAS_PLIC
+	select XIP
+	select HAS_RPI_RP2
+	select HAS_SEGGER_RTT if ZEPHYR_SEGGER_MODULE
+	help
+	  Enable support for Raspberry Pi RP2350 MCU series
+
+if SOC_SERIES_RP2350
+
+config RP2_REQUIRES_SECOND_STAGE_BOOT
+	bool
+	default y if FLASH_LOAD_OFFSET = 0x100
+
+# Flash type used by the SoC. The board should select the one used.
+
+config RP2_FLASH_W25Q080
+	bool
+	help
+	  Configure RP2 to use a W25Q080 flash chip, or similar. Should be selected
+	  by the board definition, not the user.
+
+endif

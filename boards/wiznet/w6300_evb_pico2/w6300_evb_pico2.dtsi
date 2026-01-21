@@ -3,17 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/dts-v1/;
-
 #include <freq.h>
-#include <soc/raspberrypi/rpi_pico/rp2350/rp2350.dtsi>
 #include "w6300_evb_pico2-pinctrl.dtsi"
 
 / {
 	chosen {
 		zephyr,sram = &sram0;
 		zephyr,flash = &flash0;
-		zephyr,flash-controller = &ssi;
+		zephyr,flash-controller = &qmi;
 		zephyr,console = &uart0;
 		zephyr,shell-uart = &uart0;
 		zephyr,code-partition = &code_partition;
@@ -57,7 +54,6 @@
 };
 
 &uart0 {
-	compatible = "sifive,uart0";
 	current-speed = <115200>;
 	status = "okay";
 	pinctrl-0 = <&uart0_default>;
@@ -76,7 +72,7 @@
 	cs-gpios = <&gpio0 17 GPIO_ACTIVE_LOW>;
 };
 
-&timer {
+&timer0 {
 	status = "okay";
 };
 

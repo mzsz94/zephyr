@@ -15,8 +15,8 @@ their SWD interface, using an external adapter.
 
 Hardware
 ********
-- RISC-V processor
-- Support for W6300 Ethernet MAC/PHY
+- RISC-V processor (RP2350 Hazard3)
+- Support for W6300 Ethernet MAC/PHY (Networking support in future PR)
 
 Supported Features
 ==================
@@ -29,7 +29,7 @@ The w6300_evb_pico2 board configuration supports the following hardware features
    * - Interface
      - Controller
      - Driver/Component
-   * - സ്വാതന്ത്രство
+   * - UART
      - on-chip
      - serial
    * - GPIO
@@ -56,8 +56,8 @@ AIO mapping is not yet defined for this board.
 Programming and Debugging
 *************************
 
-The overall explanation regarding flashing and debugging is the same as or :zephyr:board:`rpi_pico`.
-See the documentation for more details.
+The overall explanation regarding flashing and debugging is the same as for
+:zephyr:board:`rpi_pico`. See the documentation for more details.
 
 Building and Flashing
 =====================

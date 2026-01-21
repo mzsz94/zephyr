@@ -1,0 +1,11 @@
+# Copyright (c) 2026 SUZINEE
+# SPDX-License-Identifier: Apache-2.0
+
+menu "Raspberry Pi RP2350 configuration"
+	depends on SOC_RP2350
+
+config SOC_RP2350_PART_NUMBER
+	string
+	default "RP2350"
+
+endmenu

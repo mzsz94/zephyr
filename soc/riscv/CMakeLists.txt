@@ -1,4 +1,4 @@
 # Copyright (c) 2026 SUZINEE
 # SPDX-License-Identifier: Apache-2.0
 
-config BOARD_W6300_EVB_PICO2
+add_subdirectory(raspberrypi_rp2)

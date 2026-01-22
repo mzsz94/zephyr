@@ -8,8 +8,7 @@ config ETH_W6300
 	bool "W6300 Ethernet driver"
 	default y
 	depends on DT_HAS_WIZNET_W6300_ENABLED
-	depends on GPIO && SPI
-	select NET_L2_ETHERNET
+	select SPI
 	select ETH_W6300_PHY
 	help
 	  Enable W6300 Ethernet driver.
@@ -45,5 +44,6 @@ config ETH_W6300_PHY
 	default y
 	help
 	  Enable W6300 internal PHY.
+	  
 
 endif

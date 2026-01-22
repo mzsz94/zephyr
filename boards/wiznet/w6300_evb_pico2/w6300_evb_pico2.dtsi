@@ -77,7 +77,7 @@
 		spi-max-frequency = <30000000>;
 		int-gpios = <&gpio0 21 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
 		reset-gpios = <&gpio0 20 GPIO_ACTIVE_LOW>;
-		mac-address = [ 00 08 dc 01 02 03 ];
+		local-mac-address = [ 00 08 dc 01 02 03 ];
 	};
 };
 

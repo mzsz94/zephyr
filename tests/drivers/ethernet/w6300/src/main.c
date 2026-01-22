@@ -36,21 +36,21 @@ static int start_http_server(void)
 		},
 	};
 
-	server_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	server_fd = zsock_socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (server_fd < 0) {
 		LOG_ERR("Failed to create socket: %d", errno);
 		return -errno;
 	}
 
-	if (bind(server_fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
+	if (zsock_bind(server_fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
 		LOG_ERR("Failed to bind socket: %d", errno);
-		close(server_fd);
+		zsock_close(server_fd);
 		return -errno;
 	}
 
-	if (listen(server_fd, 1) < 0) {
+	if (zsock_listen(server_fd, 1) < 0) {
 		LOG_ERR("Failed to listen: %d", errno);
-		close(server_fd);
+		zsock_close(server_fd);
 		return -errno;
 	}
 
@@ -59,8 +59,8 @@ static int start_http_server(void)
 	while (true) {
 		struct sockaddr_in client_addr;
 		socklen_t client_addr_len = sizeof(client_addr);
-		int client_fd = accept(server_fd, (struct sockaddr *)&client_addr,
-					&client_addr_len);
+		int client_fd = zsock_accept(server_fd, (struct sockaddr *)&client_addr,
+						&client_addr_len);
 
 		if (client_fd < 0) {
 			LOG_ERR("Failed to accept connection: %d", errno);
@@ -71,18 +71,18 @@ static int start_http_server(void)
 		LOG_INF("Client connected");
 
 		char recv_buf[RECV_BUF_SIZE];
-		ssize_t received = recv(client_fd, recv_buf, sizeof(recv_buf) - 1, 0);
+		ssize_t received = zsock_recv(client_fd, recv_buf, sizeof(recv_buf) - 1, 0);
 		if (received > 0) {
 			recv_buf[received] = '\0';
 			LOG_INF("Request:\n%s", recv_buf);
 		}
 
-		ssize_t sent = send(client_fd, http_response, sizeof(http_response) - 1, 0);
+		ssize_t sent = zsock_send(client_fd, http_response, sizeof(http_response) - 1, 0);
 		if (sent < 0) {
 			LOG_ERR("Failed to send response: %d", errno);
 		}
 
-		close(client_fd);
+		zsock_close(client_fd);
 		LOG_INF("Client disconnected");
 	}
 

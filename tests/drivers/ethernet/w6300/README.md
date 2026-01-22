@@ -26,3 +26,18 @@ Request:
 GET / HTTP/1.1
 Host: 192.168.0.200
 ```
+
+## Phone Ethernet Setup Tips
+
+If you cannot reach the device from a phone (for example, `ERR_ADDRESS_UNREACHABLE`),
+make sure the phone is on the same IPv4 subnet as the W6300 board. For a direct
+Ethernet adapter connection you can set a manual IPv4 address on the phone, for
+example:
+
+* **Phone IP address:** `192.168.0.10`
+* **Subnet mask:** `255.255.255.0`
+* **Gateway:** `192.168.0.1` (or leave empty if your OS permits on a direct link)
+
+Then open `http://192.168.0.200:8080` in the phone browser (matching the board IP in
+`prj.conf`). If your network has a DHCP server, you can also leave the phone on DHCP
+and verify the board acquired an address on the same subnet before connecting.

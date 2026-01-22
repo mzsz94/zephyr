@@ -1,6 +1,7 @@
 # W6300 Ethernet Driver Test
 
-This test application verifies the functionality of the W6300 Ethernet driver on the `w6300_evb_pico2_rp2350a_hazard3` board.
+This test application verifies the functionality of the W6300 Ethernet driver on the
+`w6300_evb_pico2_rp2350a_hazard3` board by running a minimal HTTP server.
 
 ## Building and Running
 
@@ -13,12 +14,15 @@ west flash
 
 ## Expected Output
 
-The test will attempt to initialize the network interface and acquire an IP address via DHCP.
-If successful, you will see a log message indicating that the test has passed:
+The test initializes the network interface and starts an HTTP server on port 80.
+When a client connects, it logs the request and replies with a simple HTML page.
+Typical log output looks like this:
+
 ```
-Test passed: Ethernet link is up and IP address is assigned.
-```
-If the test fails to acquire an IP address within 10 seconds, it will report a failure:
-```
-Test failed: Could not acquire IP address.
+Starting W6300 HTTP server
+HTTP server listening on port 80
+Client connected
+Request:
+GET / HTTP/1.1
+Host: 192.168.0.200
 ```

@@ -4,49 +4,98 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+#include <errno.h>
+#include <stdio.h>
+
 #include <zephyr/kernel.h>
-#include <zephyr/net/net_if.h>
-#include <zephyr/net/net_core.h>
-#include <zephyr/net/net_context.h>
-#include <zephyr/net/net_mgmt.h>
 #include <zephyr/logging/log.h>
+#include <zephyr/net/net_config.h>
+#include <zephyr/net/socket.h>
 
-LOG_MODULE_REGISTER(net_test, LOG_LEVEL_DBG);
+LOG_MODULE_REGISTER(w6300_http_server, LOG_LEVEL_INF);
 
-static struct net_mgmt_event_callback mgmt_cb;
-static bool test_passed;
+#define HTTP_PORT 80
+#define RECV_BUF_SIZE 256
 
-static void net_event_handler(struct net_mgmt_event_callback *cb,
-			   uint32_t mgmt_event,
-			   struct net_if *iface)
+static const char http_response[] =
+	"HTTP/1.1 200 OK\r\n"
+	"Content-Type: text/html\r\n"
+	"Connection: close\r\n"
+	"Content-Length: 52\r\n"
+	"\r\n"
+	"<html><body><h1>W6300 HTTP Server</h1></body></html>";
+
+static int start_http_server(void)
 {
-	if (mgmt_event == NET_EVENT_IPV4_ADDR_ADD) {
-		LOG_INF("DHCP IP address acquired");
-		test_passed = true;
-		k_sleep(K_SECONDS(1));
+	int server_fd;
+	struct sockaddr_in addr = {
+		.sin_family = AF_INET,
+		.sin_port = htons(HTTP_PORT),
+		.sin_addr = {
+			.s_addr = htonl(INADDR_ANY),
+		},
+	};
+
+	server_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if (server_fd < 0) {
+		LOG_ERR("Failed to create socket: %d", errno);
+		return -errno;
 	}
+
+	if (bind(server_fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
+		LOG_ERR("Failed to bind socket: %d", errno);
+		close(server_fd);
+		return -errno;
+	}
+
+	if (listen(server_fd, 1) < 0) {
+		LOG_ERR("Failed to listen: %d", errno);
+		close(server_fd);
+		return -errno;
+	}
+
+	LOG_INF("HTTP server listening on port %d", HTTP_PORT);
+
+	while (true) {
+		struct sockaddr_in client_addr;
+		socklen_t client_addr_len = sizeof(client_addr);
+		int client_fd = accept(server_fd, (struct sockaddr *)&client_addr,
+					&client_addr_len);
+
+		if (client_fd < 0) {
+			LOG_ERR("Failed to accept connection: %d", errno);
+			k_sleep(K_MSEC(100));
+			continue;
+		}
+
+		LOG_INF("Client connected");
+
+		char recv_buf[RECV_BUF_SIZE];
+		ssize_t received = recv(client_fd, recv_buf, sizeof(recv_buf) - 1, 0);
+		if (received > 0) {
+			recv_buf[received] = '\0';
+			LOG_INF("Request:\n%s", recv_buf);
+		}
+
+		ssize_t sent = send(client_fd, http_response, sizeof(http_response) - 1, 0);
+		if (sent < 0) {
+			LOG_ERR("Failed to send response: %d", errno);
+		}
+
+		close(client_fd);
+		LOG_INF("Client disconnected");
+	}
+
+	return 0;
 }
 
 void main(void)
 {
-	LOG_INF("Starting W6300 Ethernet driver test");
+	LOG_INF("Starting W6300 HTTP server");
 
-	net_mgmt_init_event_callback(&mgmt_cb, net_event_handler, NET_EVENT_IPV4_ADDR_ADD);
-	net_mgmt_add_event_callback(&mgmt_cb);
+	(void)net_config_init_app(NULL, "Configuring network");
 
-	struct net_if *iface = net_if_get_default();
-	if (!iface) {
-		LOG_ERR("No default network interface");
-		return;
-	}
-
-	net_dhcpv4_start(iface);
-
-	k_sleep(K_SECONDS(10));
-
-	if (test_passed) {
-		LOG_INF("Test passed: Ethernet link is up and IP address is assigned.");
-	} else {
-		LOG_ERR("Test failed: Could not acquire IP address.");
+	if (start_http_server() < 0) {
+		LOG_ERR("HTTP server failed to start");
 	}
 }
